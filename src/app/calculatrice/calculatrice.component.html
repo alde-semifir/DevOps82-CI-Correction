@@ -1,0 +1,39 @@
+<span class="container">
+  <div class="calculator">
+    <span class="result-container">
+      <p class="input">{{ input }}</p>
+    </span>
+    <span class="digit-container">
+      <!-- On génère un bouton par entrée de notre liste -->
+      <!-- On lui ajoute la méthode add et on lui passe en param -->
+      <!-- la valeur -->
+      <button
+        mat-raised-button
+        *ngFor="let number of numbers"
+        (click)="add(number)"
+        color="primary"
+        [id] = "'button' + number"
+      >
+      <!-- On affiche le nombre en question dans le bouton -->
+        {{ number }}
+      </button>
+      <!-- On ajoute un bouton pour tout effacer -->
+      <button mat-raised-button (click)="clear()" color="warn" [id]="'c'">C</button>
+    </span>
+    <span class="digit-container">
+      <!-- La même que pour les numéros, mais avec les opérateurs -->
+      <button
+        mat-raised-button
+        *ngFor="let operator of operators"
+        (click)="add(operator)"
+        color="accent"
+      >
+        {{ operator }}
+      </button>
+      <!-- Et enfin, un bouton égal qui appel la méthode -->
+      <button mat-raised-button (click)="calculate()" color="warn" [id]="'equal'">
+        =
+      </button>
+    </span>
+  </div>
+</span>
