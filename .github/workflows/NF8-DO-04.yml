@@ -1,0 +1,19 @@
+# Créer une pipeline qui permet de supprimer automatiquement une branche `feature/` lorsque cette dernière est mergée sur la branche `develop`.
+
+name: Merge PRs
+on:
+  pull_request:
+    types:
+      - closed
+    branches: ['develop']
+jobs:
+  delete_old_branch:
+    if: startsWith(github.head_ref, 'feature/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete merged branch
+        uses: koj-co/delete-merged-action@master
+        with:
+          branches: "!main, !develop, feature/** "
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

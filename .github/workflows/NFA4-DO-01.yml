@@ -1,0 +1,16 @@
+# Créez une pipeline qui permet de créer automatiquement une branche lorsqu'une issue est assignée à un développeur.
+
+on:
+  issues:
+    types: [assigned]
+jobs:
+  create_issue_branch_job:
+    # Le if était pas demandé, c'est cadeau
+    if: startsWith(github.event.issue.title, 'feature/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Issue Branch
+        uses: robvanderleek/create-issue-branch@main
+        # Voir .github\issue-branch.yml pour le fichier de conf
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

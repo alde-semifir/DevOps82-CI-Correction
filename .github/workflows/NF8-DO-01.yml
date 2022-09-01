@@ -1,0 +1,37 @@
+# Créer une pipeline pour automatiser le lancement des tests lorsqu'une PR est ouverte depuis une branche `feature/<nom_feature>` vers la branche `develop`.
+# Elle testera l'application sur les versions 14 et 16 de node uniquement.
+# Il est important que la pipeline ne soit déclenchée **QUE** si la demande de merge provient d'une branche `feature/<nom_feature>` vers la `develop`
+
+# Améliorez la pipeline précédente afin qu'elle génère un rapport de coverage (artefact) nommé "coverage.txt"
+
+name: Build and test
+
+on:
+  pull_request:
+    types: [opened, reopened]
+    branches: [ develop ]
+
+jobs:
+  build:
+    if: startsWith(github.head_ref, 'feature/')
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build sur la version ${{ matrix.node-version }} de NodeJS
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm ci # npm clean install : initialisation propre de npm
+    - run: npm run build --if-present
+    - run: npm run test:coverage > coverage.txt
+# Génération du fichier de coverage
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage
+        path: coverage.txt
